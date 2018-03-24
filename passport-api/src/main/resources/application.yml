@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: passport-service
+
+ribbon:
+  #请求处理的超时时间
+  ReadTimeout: 10000
+  #请求连接的超时时间
+  ConnectTimeout: 3000
+
+feign.hystrix.enabled: true
+#hystrix 熔断机制
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000
