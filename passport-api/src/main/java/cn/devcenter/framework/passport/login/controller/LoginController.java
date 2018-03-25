@@ -3,8 +3,8 @@ package cn.devcenter.framework.passport.login.controller;
 import cn.devcenter.framework.passport.login.authentication.sdk.LoginAuthenticationService;
 import cn.devcenter.framework.passport.login.authority.sdk.LoginAuthorityService;
 import cn.devcenter.framework.passport.login.model.LoginInfoDTO;
+import cn.devcenter.framework.passport.login.model.LoginResponseDTO;
 import cn.devcenter.framework.passport.login.token.sdk.LoginTokenService;
-import cn.devcenter.framework.passport.login.user.sdk.LoginUserService;
 import cn.devcenter.framework.session.token.filter.SessionTokenHolder;
 import cn.devcenter.model.authentication.Authentication;
 import cn.devcenter.model.authority.Role;
@@ -12,6 +12,7 @@ import cn.devcenter.model.token.AccessToken;
 import cn.devcenter.model.token.UserIdentity;
 import cn.housecenter.dlfc.framework.starter.web.annotation.RestController;
 import cn.housecenter.dlfc.framework.web.core.AjaxResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,74 +28,65 @@ public class LoginController {
 
     private final LoginAuthenticationService authenticationService;
 
-    private final LoginUserService loginUserService;
-
     private final LoginAuthorityService loginAuthorityService;
 
     private final LoginTokenService loginTokenService;
 
     @Autowired
-    public LoginController(LoginAuthenticationService authenticationService, LoginUserService loginUserService, LoginAuthorityService loginAuthorityService, LoginTokenService loginTokenService) {
+    public LoginController(LoginAuthenticationService authenticationService, LoginAuthorityService loginAuthorityService, LoginTokenService loginTokenService) {
         this.authenticationService = authenticationService;
-        this.loginUserService = loginUserService;
         this.loginAuthorityService = loginAuthorityService;
         this.loginTokenService = loginTokenService;
     }
 
-    @RequestMapping(value = "/do", method = RequestMethod.POST)
-    public AjaxResult<String> doLogin(@RequestBody @Valid LoginInfoDTO loginInfoDTO) {
-        AjaxResult<String> resultOfUserId = loginUserService.getId(loginInfoDTO.getUsername());
-        if (!resultOfUserId.successful()) {
-            return AjaxResult.newInstance(String.class).fail("用户不存在");
-        }
-        AjaxResult<Authentication> resultAuthentication = authenticationService.authenticate(resultOfUserId.getData(), loginInfoDTO.getPassword());
-        if (!resultAuthentication.successful()) {
-            return AjaxResult.newInstance(String.class).fail("密码错误");
-        }
+    private AjaxResult<LoginResponseDTO> afterAuthentication(LoginInfoDTO loginInfoDTO) {
         AjaxResult<AccessToken> accessTokenResult = loginTokenService.getToken(SessionTokenHolder.getToken().getAccessToken());
         if (!accessTokenResult.successful()) {
-            return AjaxResult.newInstance(String.class).fail("访问客户端变动");
+            return AjaxResult.newInstance(LoginResponseDTO.class).fail("认证请求错误");
         }
         AccessToken accessToken = accessTokenResult.getData();
         if (accessToken.getUserIdentity() == null) {
             accessToken.setUserIdentity(new UserIdentity());
         }
-        accessToken.getUserIdentity().setAuthenticationId(resultOfUserId.getData());
-        AjaxResult<List<Role>> resultRoles = loginAuthorityService.getRoleIds(resultOfUserId.getData());
+        accessToken.getUserIdentity().setAuthenticationId(loginInfoDTO.getAuthenticationId());
+        AjaxResult<List<Role>> resultRoles = loginAuthorityService.findRoleByAuthenticationId(loginInfoDTO.getAuthenticationId(), 1, Integer.MAX_VALUE);
         if (resultRoles.successful()) {
             final List<String> roles = new ArrayList<>();
             resultRoles.getData().forEach(role -> roles.add(role.getId()));
             accessToken.getUserIdentity().setRoles(roles);
         }
-        return loginTokenService.registerUserIdentity(accessToken);
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+        if (null != accessToken.getUserIdentity().getRoles()) {
+            loginResponseDTO.setRoles(accessToken.getUserIdentity().getRoles().toArray());
+        }
+        if (StringUtils.isBlank(accessToken.getUserIdentity().getUserIdentifier())) {
+            AjaxResult<String> userIdentifierResult = loginTokenService.registerUserIdentity(accessToken);
+            if (!userIdentifierResult.successful()) {
+                return AjaxResult.newInstance(LoginResponseDTO.class).fail("生成用户标识错误");
+            }
+            loginResponseDTO.setUserIdentifier(userIdentifierResult.getData());
+        } else {
+            loginResponseDTO.setUserIdentifier(accessToken.getUserIdentity().getUserIdentifier());
+        }
+        return AjaxResult.newInstance(LoginResponseDTO.class).success("登录成功", loginResponseDTO);
+    }
+
+    @RequestMapping(value = "/do", method = RequestMethod.POST)
+    public AjaxResult<LoginResponseDTO> doLogin(@RequestBody @Valid LoginInfoDTO loginInfoDTO) {
+        AjaxResult<Authentication> resultAuthentication = authenticationService.authenticate(loginInfoDTO.getAuthenticationId(), loginInfoDTO.getSecret());
+        if (!resultAuthentication.successful()) {
+            return AjaxResult.newInstance(LoginResponseDTO.class).fail("认证失败");
+        }
+        return afterAuthentication(loginInfoDTO);
     }
 
     @RequestMapping(value = "/quick", method = RequestMethod.POST)
-    public AjaxResult<String> doQuickLogin(@RequestBody @Valid LoginInfoDTO loginInfoDTO) {
-        AjaxResult<String> resultOfUserId = loginUserService.getId(loginInfoDTO.getUsername());
-        if (!resultOfUserId.successful()) {
-            return AjaxResult.newInstance(String.class).fail("用户不存在");
-        }
-        AjaxResult<Authentication> resultAuthentication = authenticationService.authenticate(resultOfUserId.getData());
+    public AjaxResult<LoginResponseDTO> doQuickLogin(@RequestBody @Valid LoginInfoDTO loginInfoDTO) {
+        AjaxResult<Authentication> resultAuthentication = authenticationService.authenticate(loginInfoDTO.getAuthenticationId());
         if (!resultAuthentication.successful()) {
-            return AjaxResult.newInstance(String.class).fail("密码错误");
+            return AjaxResult.newInstance(LoginResponseDTO.class).fail("认证失败");
         }
-        AjaxResult<AccessToken> accessTokenResult = loginTokenService.getToken(SessionTokenHolder.getToken().getAccessToken());
-        if (!accessTokenResult.successful()) {
-            return AjaxResult.newInstance(String.class).fail("访问客户端变动");
-        }
-        AccessToken accessToken = accessTokenResult.getData();
-        if (accessToken.getUserIdentity() == null) {
-            accessToken.setUserIdentity(new UserIdentity());
-        }
-        accessToken.getUserIdentity().setAuthenticationId(resultOfUserId.getData());
-        AjaxResult<List<Role>> resultRoles = loginAuthorityService.getRoleIds(resultOfUserId.getData());
-        if (resultRoles.successful()) {
-            final List<String> roles = new ArrayList<>();
-            resultRoles.getData().forEach(role -> roles.add(role.getId()));
-            accessToken.getUserIdentity().setRoles(roles);
-        }
-        return loginTokenService.registerUserIdentity(accessToken);
+        return afterAuthentication(loginInfoDTO);
     }
 
 

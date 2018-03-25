@@ -10,10 +10,11 @@
     <version>1.0.0</version>
     <modules>
         <module>passport-api</module>
-        <module>login-user-sdk</module>
         <module>login-token-sdk</module>
         <module>login-authority-sdk</module>
         <module>login-authentication-sdk</module>
+        <module>register-authentication-sdk</module>
+        <module>register-authority-sdk</module>
     </modules>
 
     <properties>
@@ -74,7 +75,12 @@
             </dependency>
             <dependency>
                 <groupId>cn.devcenter.framework</groupId>
-                <artifactId>login-user-sdk</artifactId>
+                <artifactId>register-authentication-sdk</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.devcenter.framework</groupId>
+                <artifactId>register-authority-sdk</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

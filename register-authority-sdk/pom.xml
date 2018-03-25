@@ -9,12 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>login-user-sdk</artifactId>
+    <artifactId>register-authority-sdk</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>cn.housecenter.dlfc.framework</groupId>
             <artifactId>dlfc-framework-sdk-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.devcenter.model</groupId>
+            <artifactId>authority</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.devcenter.framework</groupId>
+            <artifactId>authority-api-model</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

@@ -6,9 +6,7 @@ import cn.housecenter.dlfc.framework.boot.stereotype.Service;
 import cn.housecenter.dlfc.framework.web.core.AjaxResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,15 +15,10 @@ public class LoginAuthorityServiceFallback implements LoginAuthorityService {
 
     @RequestMapping(value = "/find-by-authencationid/fallback")
     @Override
-    public AjaxResult<List<Role>> getRoleIds(@RequestParam("authenticationId") String authenticationId) {
+    public AjaxResult<List<Role>> findRoleByAuthenticationId(String authenticationId, int page, int size) {
         log.warn("method [getRoleIds(authenticationId)] is not available.");
         AjaxResult<List<Role>> result = new AjaxResult<>();
-        List<Role> roles = new ArrayList<>();
-        Role role = new Role();
-        role.setId("1");
-        role.setName("ADMIN");
-        roles.add(role);
-        return result.success("授权服务不可用", roles);
+        return result.fail("授权服务不可用");
     }
 
 }
