@@ -16,6 +16,6 @@ import java.util.List;
 public interface LoginAuthorityService {
 
     @RequestMapping(value = "/find-role-by-authencationid", method = RequestMethod.GET)
-    public AjaxResult<List<Role>> findRoleByAuthenticationId(@RequestParam("authenticationId") String authenticationId, @RequestParam("page") int page, @RequestParam("size") int size);
+    AjaxResult<cn.devcenter.model.repository.Page<Role>>  findRoleByAuthenticationId(@RequestParam("authenticationId") String authenticationId, @RequestParam("page") int page, @RequestParam("size") int size);
 
 }

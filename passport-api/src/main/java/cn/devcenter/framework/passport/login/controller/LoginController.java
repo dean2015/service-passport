@@ -8,6 +8,7 @@ import cn.devcenter.framework.passport.login.token.sdk.LoginTokenService;
 import cn.devcenter.framework.session.token.filter.SessionTokenHolder;
 import cn.devcenter.model.authentication.Authentication;
 import cn.devcenter.model.authority.Role;
+import cn.devcenter.model.repository.Page;
 import cn.devcenter.model.token.AccessToken;
 import cn.devcenter.model.token.UserIdentity;
 import cn.housecenter.dlfc.framework.starter.web.annotation.RestController;
@@ -49,10 +50,10 @@ public class LoginController {
             accessToken.setUserIdentity(new UserIdentity());
         }
         accessToken.getUserIdentity().setAuthenticationId(loginInfoDTO.getAuthenticationId());
-        AjaxResult<List<Role>> resultRoles = loginAuthorityService.findRoleByAuthenticationId(loginInfoDTO.getAuthenticationId(), 1, Integer.MAX_VALUE);
+        AjaxResult<Page<Role>> resultRoles = loginAuthorityService.findRoleByAuthenticationId(loginInfoDTO.getAuthenticationId(), 1, Integer.MAX_VALUE);
         if (resultRoles.successful()) {
             final List<String> roles = new ArrayList<>();
-            resultRoles.getData().forEach(role -> roles.add(role.getId()));
+            resultRoles.getData().getContent().forEach(role -> roles.add(role.getId()));
             accessToken.getUserIdentity().setRoles(roles);
         }
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
