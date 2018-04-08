@@ -13,8 +13,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.housecenter.dlfc.framework.starter.web</groupId>
-            <artifactId>dlfc-framework-starter-web</artifactId>
+            <groupId>cn.devcenter.framework</groupId>
+            <artifactId>web-jetty</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.devcenter.framework</groupId>
@@ -40,6 +40,10 @@
         <dependency>
             <groupId>cn.devcenter.framework</groupId>
             <artifactId>register-authority-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.devcenter.model</groupId>
+            <artifactId>token</artifactId>
         </dependency>
     </dependencies>
 

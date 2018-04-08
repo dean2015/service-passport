@@ -13,8 +13,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>cn.housecenter.dlfc.framework</groupId>
-            <artifactId>dlfc-framework-sdk-base</artifactId>
+            <groupId>cn.devcenter.framework</groupId>
+            <artifactId>component-sdk-base</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.devcenter.model</groupId>
