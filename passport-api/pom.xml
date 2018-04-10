@@ -17,33 +17,8 @@
             <artifactId>web-jetty</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.devcenter.framework</groupId>
-            <artifactId>login-authentication-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.devcenter.framework</groupId>
-            <artifactId>login-authority-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.devcenter.framework</groupId>
-            <artifactId>login-token-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.devcenter.framework</groupId>
-            <artifactId>session-token</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.devcenter.framework</groupId>
-            <artifactId>register-authentication-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.devcenter.framework</groupId>
-            <artifactId>register-authority-sdk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.devcenter.model</groupId>
-            <artifactId>token</artifactId>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
     </dependencies>
 

@@ -14,17 +14,9 @@
     <version>1.0.0</version>
     <modules>
         <module>passport-api</module>
-        <module>login-token-sdk</module>
-        <module>login-authority-sdk</module>
-        <module>login-authentication-sdk</module>
-        <module>register-authentication-sdk</module>
-        <module>register-authority-sdk</module>
+        <module>component-authentication</module>
+        <module>component-authority</module>
     </modules>
-
-    <properties>
-        <framework.version>1.1.0.RELEASE</framework.version>
-        <jdk.version>1.8</jdk.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -49,27 +41,12 @@
         <dependencies>
             <dependency>
                 <groupId>cn.devcenter.framework</groupId>
-                <artifactId>login-authentication-sdk</artifactId>
+                <artifactId>component-authentication</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.devcenter.framework</groupId>
-                <artifactId>login-authority-sdk</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.devcenter.framework</groupId>
-                <artifactId>login-token-sdk</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.devcenter.framework</groupId>
-                <artifactId>register-authentication-sdk</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.devcenter.framework</groupId>
-                <artifactId>register-authority-sdk</artifactId>
+                <artifactId>component-authority</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

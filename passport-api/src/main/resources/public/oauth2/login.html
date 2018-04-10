@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Login ID: <input id="loginId" /> <br>
+Password: <input id="password" value="abcdefg123456789" /> <br>
+<button id="loginbutton">登    录</button>
+<div id="logindiv"></div>
+</body>
+
+<script type="text/javascript" src="../lib/jquery.min.js"></script>
+
+<script language="JavaScript">
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  decodeURIComponent(r[2]); return null;
+    }
+
+    $('#logindiv').text(getQueryString("appId"));
+
+
+    $('#loginbutton').click(function () {
+        var loginId = $('#loginId').val();
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:20003/oauth2/authorize",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "appId":getQueryString("app_id"),
+                "redirectUri":getQueryString("redirect_uri"),
+                "loginId":$('#loginId').val(),
+                "password":$('#password').val()
+            }),
+            success: function (data) {
+                if(data.code == 0){
+                    window.location.href=data.data;
+                }else {
+                    $('#logindiv').text(JSON.stringify(data));
+                }
+            },
+            error: function (err) {
+                console.log('发生一个错误on！');
+            }
+        });
+    });
+</script>
+</html>
