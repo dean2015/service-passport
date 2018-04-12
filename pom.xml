@@ -16,6 +16,7 @@
         <module>passport-api</module>
         <module>component-authentication</module>
         <module>component-authority</module>
+        <module>component-token</module>
     </modules>
 
     <dependencies>

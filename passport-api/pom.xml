@@ -20,6 +20,14 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.devcenter.framework</groupId>
+            <artifactId>component-authentication</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.devcenter.framework</groupId>
+            <artifactId>component-authority</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
